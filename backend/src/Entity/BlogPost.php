@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\BlogPostRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +23,12 @@ class BlogPost
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created = null;
+
+
+    public function __construct()
+    {
+        $this->created = new DateTime();
+    }
 
     public function getId(): ?int
     {
