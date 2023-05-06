@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -26,23 +27,29 @@ class BlogPostController extends AbstractController
     public function all(): JsonResponse
     {
         $blogPosts = $this->blogPostRepository->findAll();
-        return $this->json([
+        return $this->json(data: [
             'blog_posts' => $blogPosts
-        ]);
+        ], status: 200);
     }
 
     /**
      * @Route(path="", name="create", methods={"POST"})
      */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
-        $createBlogPostDto = $this->serializer->deserialize($request->getContent(), CreateBlogPostDto::class, 'json');
+
+        try {
+            $createBlogPostDto = $this->serializer->deserialize($request->getContent(), CreateBlogPostDto::class, 'json');
+        } catch (MissingConstructorArgumentsException) {
+            return $this->json(data: ["message" => "Missing parameter"], status: 422);
+        }
+
         $blogPost = new BlogPost();
         $blogPost->setTitle($createBlogPostDto->getTitle());
         $blogPost->setContent($createBlogPostDto->getContent());
 
         $this->blogPostRepository->save($blogPost, true);
 
-        return $this->json($blogPost);
+        return $this->json(data: $blogPost, status: 201);
     }
 }
