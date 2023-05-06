@@ -1,0 +1,24 @@
+version: '3.9'
+
+networks:
+  blog-network:
+
+services:
+  database:
+    image: mysql:8
+    container_name: blog-db
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_unicode_ci
+    environment:
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "user"
+      MYSQL_DATABASE: "blog"
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./database:/var/lib/mysql
+
+    networks:
+      - blog-network
