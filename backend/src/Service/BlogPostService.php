@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Dto\Request\CreateBlogPostRequestDto;
+use App\Dto\Request\DeleteBlogPostRequestDto;
 use App\Dto\Request\UpdateBlogPostRequestDto;
 use App\Entity\BlogPost;
 use App\Repository\BlogPostRepository;
@@ -65,5 +66,20 @@ class BlogPostService
         $this->blogPostRepository->save($blogPost, true);
 
         return $blogPost;
+    }
+
+    public function deleteBlogPost(DeleteBlogPostRequestDto $deleteBlogPostRequestDto): bool
+    {
+
+        $blogPost = $this->blogPostRepository->find($deleteBlogPostRequestDto->getId());
+
+        if (!$blogPost)
+            throw new EntityNotFoundException("Blogpost with id " . $deleteBlogPostRequestDto->getId() . " does not exist");
+
+        $this->blogPostRepository->remove($blogPost, true);
+
+        $blogPost = $this->blogPostRepository->find($deleteBlogPostRequestDto->getId());
+
+        return !$blogPost;
     }
 }

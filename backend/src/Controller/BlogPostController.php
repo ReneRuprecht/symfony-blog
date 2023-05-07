@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Request\CreateBlogPostRequestDto;
+use App\Dto\Request\DeleteBlogPostRequestDto;
 use App\Dto\Request\UpdateBlogPostRequestDto;
 use App\Service\BlogPostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,5 +56,20 @@ class BlogPostController extends AbstractController
         $updatedBlogPost = $this->blogPostService->updateBlogPost($updateBlogPostRequestDto);
 
         return $this->json(data: $updatedBlogPost, status: 200);
+    }
+
+    /**
+     * @Route(path="", name="update", methods={"DELETE"})
+     */
+
+    public function deleteBlogPost(DeleteBlogPostRequestDto $deleteBlogPostRequestDto): JsonResponse
+    {
+
+        if (!$deleteBlogPostRequestDto->validate())
+            return $this->json(data: ['message' => "missing parameter"], status: 422);
+
+        $deleteBlogPostResult = $this->blogPostService->deleteBlogPost($deleteBlogPostRequestDto);
+
+        return $this->json(data: ["deleted" => $deleteBlogPostResult], status: 200);
     }
 }
