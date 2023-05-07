@@ -4,7 +4,7 @@ namespace App\Dto\Request;
 
 
 
-class CreateBlogPostDto
+class CreateBlogPostRequestDto
 {
 
     public function __construct(private string $title, private string $content)
@@ -15,6 +15,7 @@ class CreateBlogPostDto
     {
         return $this->title;
     }
+
     public function getContent(): string
     {
         return $this->content;
