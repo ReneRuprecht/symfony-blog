@@ -7,10 +7,7 @@ use App\Dto\Request\UpdateBlogPostRequestDto;
 use App\Service\BlogPostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route(path="/api/v1/blog")
@@ -34,16 +31,13 @@ class BlogPostController extends AbstractController
     /**
      * @Route(path="", name="create", methods={"POST"})
      */
-    public function addBlogPost(Request $request, SerializerInterface $serializer): JsonResponse
+    public function addBlogPost(CreateBlogPostRequestDto $createBlogPostRequestDto): JsonResponse
     {
 
-        try {
-            $createBlogPostDto = $serializer->deserialize($request->getContent(), CreateBlogPostRequestDto::class, 'json');
-            $blogPost = $this->blogPostService->addBlogPost($createBlogPostDto);
-        } catch (MissingConstructorArgumentsException) {
+        if (!$createBlogPostRequestDto->validate())
             return $this->json(data: ["message" => "Missing parameter"], status: 422);
-        }
 
+        $blogPost = $this->blogPostService->addBlogPost($createBlogPostRequestDto);
 
         return $this->json(data: $blogPost, status: 201);
     }
@@ -52,14 +46,14 @@ class BlogPostController extends AbstractController
      * @Route(path="", name="update", methods={"PUT"})
      */
 
-    public function updateBlogPost(Request $request, SerializerInterface $serializer): JsonResponse
+    public function updateBlogPost(UpdateBlogPostRequestDto $updateBlogPostRequestDto): JsonResponse
     {
-        try {
-            $updateBlogPostDto = $serializer->deserialize($request->getContent(), UpdateBlogPostRequestDto::class, 'json');
-            $updatedBlogPost = $this->blogPostService->updateBlogPost($updateBlogPostDto);
-        } catch (MissingConstructorArgumentsException) {
+
+        if (!$updateBlogPostRequestDto->validate())
             return $this->json(data: ['message' => "missing parameter"], status: 422);
-        }
+
+        $updatedBlogPost = $this->blogPostService->updateBlogPost($updateBlogPostRequestDto);
+
         return $this->json(data: $updatedBlogPost, status: 200);
     }
 }

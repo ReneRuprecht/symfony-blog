@@ -41,21 +41,26 @@ class BlogPostService
     }
 
     /**
-     * @param UpdadeBlogPostRequestDto $updateBlogPostRequestDto
-     * @return ?BlogPost
+     * @param UpdateBlogPostRequestDto $updateBlogPostRequestDto
+     * @throws EntityNotFoundException
+     * @return BlogPost
      */
-    public function updateBlogPost(UpdateBlogPostRequestDto $updateBlogPostRequestDto): ?BlogPost
+    public function updateBlogPost(UpdateBlogPostRequestDto $updateBlogPostRequestDto): BlogPost
     {
 
         $blogPost = $this->blogPostRepository->find($updateBlogPostRequestDto->getId());
 
-        if (!$blogPost) throw new EntityNotFoundException("Blogpost with id " . $updateBlogPostRequestDto->getId() . " does not exist");
+        if (!$blogPost)
+            throw new EntityNotFoundException("Blogpost with id " . $updateBlogPostRequestDto->getId() . " does not exist");
 
-        if ($updateBlogPostRequestDto->getTitle() == null && $updateBlogPostRequestDto->getContent() == null) return $blogPost;
+        if (!$updateBlogPostRequestDto->getTitle() && !$updateBlogPostRequestDto->getContent())
+            return $blogPost;
 
-        if ($updateBlogPostRequestDto->getTitle() != null) $blogPost->setTitle($updateBlogPostRequestDto->getTitle());
+        if ($updateBlogPostRequestDto->getTitle())
+            $blogPost->setTitle($updateBlogPostRequestDto->getTitle());
 
-        if ($updateBlogPostRequestDto->getContent() != null) $blogPost->setContent($updateBlogPostRequestDto->getContent());
+        if ($updateBlogPostRequestDto->getContent())
+            $blogPost->setContent($updateBlogPostRequestDto->getContent());
 
         $this->blogPostRepository->save($blogPost, true);
 

@@ -2,20 +2,24 @@
 
 namespace App\Dto\Request;
 
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
-
-class CreateBlogPostRequestDto
+class CreateBlogPostRequestDto extends AbstractBaseRequestDto
 {
 
-    public function __construct(private string $title, private string $content)
-    {
-    }
+    #[Type('string')]
+    #[NotBlank()]
+    protected string $title;
 
-    public function getTitle(): string
+    #[Type('string')]
+    #[NotBlank([])]
+    protected string $content;
+
+    public function gettitle(): string
     {
         return $this->title;
     }
-
     public function getContent(): string
     {
         return $this->content;
