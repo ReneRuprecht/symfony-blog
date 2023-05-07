@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Request\CreateBlogPostRequestDto;
+use App\Dto\Request\UpdateBlogPostRequestDto;
 use App\Service\BlogPostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,5 +46,20 @@ class BlogPostController extends AbstractController
 
 
         return $this->json(data: $blogPost, status: 201);
+    }
+
+    /**
+     * @Route(path="", name="update", methods={"PUT"})
+     */
+
+    public function updateBlogPost(Request $request, SerializerInterface $serializer): JsonResponse
+    {
+        try {
+            $updateBlogPostDto = $serializer->deserialize($request->getContent(), UpdateBlogPostRequestDto::class, 'json');
+            $updatedBlogPost = $this->blogPostService->updateBlogPost($updateBlogPostDto);
+        } catch (MissingConstructorArgumentsException) {
+            return $this->json(data: ['message' => "missing parameter"], status: 422);
+        }
+        return $this->json(data: $updatedBlogPost, status: 200);
     }
 }

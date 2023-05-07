@@ -17,7 +17,9 @@ framework:
     #fragments: true
     php_errors:
         log: true
-
+    exceptions:
+        Doctrine\ORM\EntityNotFoundException:
+            status_code: 404
 when@test:
     framework:
         test: true
