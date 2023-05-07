@@ -46,7 +46,6 @@ class BlogPostController extends AbstractController
     /**
      * @Route(path="", name="update", methods={"PUT"})
      */
-
     public function updateBlogPost(UpdateBlogPostRequestDto $updateBlogPostRequestDto): JsonResponse
     {
 
@@ -59,7 +58,7 @@ class BlogPostController extends AbstractController
     }
 
     /**
-     * @Route(path="", name="update", methods={"DELETE"})
+     * @Route(path="", name="delete", methods={"DELETE"})
      */
 
     public function deleteBlogPost(DeleteBlogPostRequestDto $deleteBlogPostRequestDto): JsonResponse
