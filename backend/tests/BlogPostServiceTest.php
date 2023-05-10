@@ -8,7 +8,6 @@ use App\Entity\BlogPost;
 use App\Repository\BlogPostRepository;
 use App\Service\BlogPostService;
 use Doctrine\ORM\EntityNotFoundException;
-use PharIo\Manifest\InvalidEmailException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class BlogPostServiceTest extends KernelTestCase
@@ -17,13 +16,13 @@ class BlogPostServiceTest extends KernelTestCase
     {
         $blogPostRepository = $this->createMock(BlogPostRepository::class);
 
-        $BlogPostService = new BlogPostService($blogPostRepository);
+        $blogPostService = new BlogPostService($blogPostRepository);
 
         $blogPostRepository->expects($this->any())
             ->method('findAll')
             ->willReturn([]);
 
-        $this->assertEquals([], $BlogPostService->getAllBlogPosts());
+        $this->assertEquals([], $blogPostService->getAllBlogPosts());
     }
     public function testAddBlogPostShouldAddBlogPost(): void
     {
@@ -31,23 +30,23 @@ class BlogPostServiceTest extends KernelTestCase
         $expectedTitle = "testTitle";
         $expectedcontent = "testContent";
 
-        $createBlogPostDto = $this->createMock(CreateBlogPostRequestDto::class);
-        $createBlogPostDto->expects($this->any())
+        $createBlogPostRequestDto = $this->createMock(CreateBlogPostRequestDto::class);
+        $createBlogPostRequestDto->expects($this->any())
             ->method('getTitle')
             ->willReturn($expectedTitle);
-        $createBlogPostDto->expects($this->any())
+        $createBlogPostRequestDto->expects($this->any())
             ->method('getContent')
             ->willReturn($expectedcontent);
 
-        $this->assertEquals($expectedTitle, $createBlogPostDto->getTitle());
-        $this->assertEquals($expectedcontent, $createBlogPostDto->getContent());
+        $this->assertEquals($expectedTitle, $createBlogPostRequestDto->getTitle());
+        $this->assertEquals($expectedcontent, $createBlogPostRequestDto->getContent());
 
         $blogPostRepository = $this->createMock(BlogPostRepository::class);
 
         $blogPostRepository->expects($this->once())->method('save');
         $BlogPostService = new BlogPostService($blogPostRepository);
 
-        $createdBlogPost = $BlogPostService->addBlogPost($createBlogPostDto);
+        $createdBlogPost = $BlogPostService->addBlogPost($createBlogPostRequestDto);
 
         $this->assertEquals($expectedTitle, $createdBlogPost->getTitle());
         $this->assertEquals($expectedcontent, $createdBlogPost->getContent());
